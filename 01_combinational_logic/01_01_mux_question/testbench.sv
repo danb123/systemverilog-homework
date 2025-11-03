@@ -36,6 +36,16 @@ module testbench;
   endtask
 
   initial
+  begin
+      `ifdef __ICARUS__
+      // Uncomment the following line
+      // to generate a VCD file and analyze it using GTKwave or Surfer
+
+        $dumpvars;
+      `endif
+  end
+
+  initial
     begin
       test ('ha, 'hb, 'hc, 'hd, 0, 'ha);
       test ('ha, 'hb, 'hc, 'hd, 1, 'hb);

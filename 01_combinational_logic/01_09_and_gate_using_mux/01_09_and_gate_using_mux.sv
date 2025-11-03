@@ -23,7 +23,7 @@ module and_gate_using_mux
     input  b,
     output o
 );
-
+  mux m1 (0, a, b, o);
   // Task:
   // Implement and gate using instance(s) of mux,
   // constants 0 and 1, and wire connections

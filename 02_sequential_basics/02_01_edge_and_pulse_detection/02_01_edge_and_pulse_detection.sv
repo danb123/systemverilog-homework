@@ -26,6 +26,20 @@ endmodule
 
 module one_cycle_pulse_detector (input clk, rst, a, output detected);
 
+  logic det_posedge;
+  logic det_posedge_r;
+  posedge_detector pd (clk, rst, a, det_posedge);
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      det_posedge_r <= 0;
+    end else begin
+      det_posedge_r <= det_posedge;
+    end
+  end
+
+  // if we detected a postive edge on the previous cycle and the current input
+  // is low, then we have detected 010
+  assign detected = ~a & det_posedge_r;
   // Task:
   // Create an one cycle pulse (010) detector.
   //

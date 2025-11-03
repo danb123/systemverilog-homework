@@ -29,6 +29,15 @@ module mux_4_1
   output [3:0] y
 );
 
+  logic [3:0] dd [0:3];
+
+  assign dd [0] = d0;
+  assign dd [1] = d1;
+  assign dd [2] = d2;
+  assign dd [3] = d3;
+
+  assign y = dd [sel];
+
   // Task:
   // Using code for mux_2_1 as an example,
   // write code for 4:1 mux using array index
