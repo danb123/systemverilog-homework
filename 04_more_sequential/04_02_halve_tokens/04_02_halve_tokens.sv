@@ -19,5 +19,18 @@ module halve_tokens
     // a -> 110_011_101_000_1111
     // b -> 010_001_001_000_0101
 
+    logic first_token;
+
+    always_ff @(posedge clk) begin
+      if (rst) begin
+        first_token <= 0;
+      end else if (a && !first_token) begin
+        first_token <= 1;
+      end else if (b) begin
+        first_token <= 0;
+      end
+    end
+
+    assign b = a && first_token;
 
 endmodule

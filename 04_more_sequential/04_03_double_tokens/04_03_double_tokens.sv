@@ -24,6 +24,25 @@ module double_tokens
     // Example:
     // a -> 10010011000110100001100100
     // b -> 11011011110111111001111110
+    int tokens_to_send;
 
+    always_ff @(posedge clk) begin
+      if (rst) begin
+        tokens_to_send <= 0;
+      end else if (a) begin
+        tokens_to_send <= tokens_to_send + 1;
+      end else if (!a && b) begin
+        tokens_to_send <= tokens_to_send - 1;
+      end
+    end
+    always_ff @(posedge clk) begin
+      if (rst) begin
+        overflow <= 0;
+      end else if (tokens_to_send > 200) begin
+        overflow <= 1;
+      end
+    end
+
+    assign b = a || (tokens_to_send != 0);
 
 endmodule
