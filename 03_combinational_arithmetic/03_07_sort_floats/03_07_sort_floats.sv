@@ -85,6 +85,58 @@ module sort_three_floats (
     //
     // The FLEN parameter is defined in the "import/preprocessed/cvw/config-shared.vh" file
     // and usually equal to the bit width of the double-precision floating-point number, FP64, 64 bits.
+    logic u0_less_or_equal_u1;
+    logic u0_less_or_equal_u2;
+    logic u1_less_or_equal_u2;
+    logic err0, err1, err2;
+    logic seq_021, seq_102, seq120, seq_201, seq_210;
 
+    f_less_or_equal i_floe_u0u1
+    (
+        .a   ( unsorted [0]        ),
+        .b   ( unsorted [1]        ),
+        .res ( u0_less_or_equal_u1 ),
+        .err ( err0                 )
+    );
+
+    f_less_or_equal i_floe_u0u2
+    (
+        .a   ( unsorted [0]        ),
+        .b   ( unsorted [2]        ),
+        .res ( u0_less_or_equal_u2 ),
+        .err ( err1                 )
+    );
+
+    f_less_or_equal i_floe_u1u2
+    (
+        .a   ( unsorted [1]        ),
+        .b   ( unsorted [2]        ),
+        .res ( u1_less_or_equal_u2 ),
+        .err ( err2                 )
+    );
+
+    assign seq_021 = ( u0_less_or_equal_u1 &&  u0_less_or_equal_u2 && !u1_less_or_equal_u2);
+    assign seq_102 = (!u0_less_or_equal_u1 &&  u1_less_or_equal_u2 &&  u0_less_or_equal_u2);
+    assign seq_120 = (!u0_less_or_equal_u1 &&  u1_less_or_equal_u2 && !u0_less_or_equal_u2);
+    assign seq_201 = (!u0_less_or_equal_u2 && !u1_less_or_equal_u2 &&  u0_less_or_equal_u1);
+    assign seq_210 = (!u0_less_or_equal_u2 && !u1_less_or_equal_u2 && !u0_less_or_equal_u1);
+
+    always_comb begin
+      if (seq_021) begin
+        {sorted[0], sorted[1], sorted[2]} = {unsorted[0], unsorted[2], unsorted[1]};
+      end else if (seq_102) begin
+        {sorted[0], sorted[1], sorted[2]} = {unsorted[1], unsorted[0], unsorted[2]};
+      end else if (seq_120) begin
+        {sorted[0], sorted[1], sorted[2]} = {unsorted[1], unsorted[2], unsorted[0]};
+      end else if (seq_201) begin
+        {sorted[0], sorted[1], sorted[2]} = {unsorted[2], unsorted[0], unsorted[1]};
+      end else if (seq_210) begin
+        {sorted[0], sorted[1], sorted[2]} = {unsorted[2], unsorted[1], unsorted[0]};
+      end else begin // sequence 0, 1, 2
+        sorted = unsorted;
+      end
+    end
+
+    assign err = (err0 || err1 || err2);
 
 endmodule

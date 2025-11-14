@@ -52,5 +52,11 @@ module signed_or_unsigned_mul
   input                signed_mul,
   output [2 * n - 1:0] res
 );
+  logic signed [n - 1:0] a_s, b_s;
+  logic signed [2 * n -1:0] res_s;
 
+  assign a_s = a;
+  assign b_s = b;
+  assign res_s = a_s * b_s;
+  assign res = (signed_mul) ? res_s : (a * b);
 endmodule
